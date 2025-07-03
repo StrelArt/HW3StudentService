@@ -3,12 +3,14 @@ package telran.java58.student.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(of = "id")
+@Document(collection = "students")
 public class Student {
     private long id;
     @Setter
