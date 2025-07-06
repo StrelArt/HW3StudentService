@@ -12,11 +12,8 @@ import telran.java58.student.dto.exeptions.ConflictException;
 import telran.java58.student.dto.exeptions.NotFoundException;
 import telran.java58.student.model.Student;
 
-
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void addStudent(StudentCredentialsDto studentDto) {
-        if (studentRepository.findById(studentDto.getId()).isPresent()) {
+        if (studentRepository.existsById(studentDto.getId())) {
             throw new ConflictException();
         }
         Student student = new Student(studentDto.getId(), studentDto.getName(), studentDto.getPassword());
@@ -65,31 +62,20 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDto> findStudentsByName(String name) {
-        return studentRepository.findAll().stream()
-                .filter(s -> s.getName().equalsIgnoreCase(name))
+        return studentRepository.findByNameIgnoreCase(name)
                 .map(s -> new StudentDto(s.getId(), s.getName(), s.getScores()))
                 .toList();
     }
 
 
     @Override
-    public Long countStudentsByNames(Set<String> name) {
-        Set<String> lowerCaseNames = name.stream()
-                .filter(Objects::nonNull)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
-
-        return studentRepository.findAll().stream()
-                .filter(s -> s.getName() != null && lowerCaseNames.contains(
-                        s.getName().toLowerCase()))
-                .count();
+    public Long countStudentsByNames(Set<String> names) {
+        return studentRepository.countByNameInIgnoreCase(names);
     }
 
     @Override
     public List<StudentDto> findStudentsByExamNameMinScore(String examName, Integer minScore) {
-        return studentRepository.findAll().stream()
-                .filter(s -> s.getScores() != null && s.getScores().containsKey(examName))
-                .filter(s -> s.getScores().get(examName) >= minScore)
+        return studentRepository.findByExamAndScoresGreaterThan(examName, minScore)
                 .map(s -> new StudentDto(s.getId(), s.getName(), s.getScores()))
                 .toList();
     }
