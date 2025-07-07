@@ -46,11 +46,16 @@ public class StudentServiceImpl implements StudentService {
         return modelMapper.map(student, StudentDto.class);
     }
 
+    //TODO add null test
     @Override
     public StudentCredentialsDto updateStudent(Long id, StudentUpdateDto studentUpdateDto) {
         Student student = studentRepository.findById(id).orElseThrow(NotFoundException::new);
-        student.setName(studentUpdateDto.getName());
-        student.setPassword(studentUpdateDto.getPassword());
+        if (studentUpdateDto.getName() != null) {
+            student.setName(studentUpdateDto.getName());
+        }
+        if (studentUpdateDto.getPassword() != null) {
+            student.setPassword(studentUpdateDto.getPassword());
+        }
         studentRepository.save(student);
         return modelMapper.map(student, StudentCredentialsDto.class);
 
