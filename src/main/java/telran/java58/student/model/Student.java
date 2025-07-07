@@ -2,12 +2,14 @@ package telran.java58.student.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor
 @Getter
 @EqualsAndHashCode(of = "id")
 @Document(collection = "students")
